@@ -7,12 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Registra a classe HatCoMetrics como um serviço singleton
 builder.Services.AddSingleton<HatCoMetrics>();
 
 var app = builder.Build();
 
-// Define o endpoint para completar a venda
 app.MapPost("/complete-sale", async (HttpContext context, HatCoMetrics metrics) => {
     var request = await context.Request.ReadFromJsonAsync<SaleModel>();
     if (request == null)
@@ -25,7 +23,6 @@ app.MapPost("/complete-sale", async (HttpContext context, HatCoMetrics metrics) 
     context.Response.StatusCode = 200; // OK
 });
 
-// Inicia o monitoramento e venda de chapéus no console
 var meter = new Meter("HatCo.Store");
 var hatsSold = meter.CreateCounter<int>("hatco.store.hats_sold");
 var task = Task.Run(() => {
@@ -33,11 +30,11 @@ var task = Task.Run(() => {
     while (!Console.KeyAvailable)
     {
         Thread.Sleep(1000);
-        hatsSold.Add(4); // Simula a venda de 4 chapéus por segundo
+        hatsSold.Add(4); 
     }
 });
 
-app.Run(); // Inicia a aplicação web
+app.Run(); 
 public class HatCoMetrics
 {
     private readonly Counter<int> _hatsSold;
